@@ -17,6 +17,11 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    def validate(self, data):
+        if self.context['request'].user in data['chat'].members.all():
+            return data
+        raise serializers.ValidationError("")
+
     class Meta:
         model = Comment
         fields = '__all__'

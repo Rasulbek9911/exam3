@@ -14,6 +14,11 @@ class PostList(generics.ListAPIView):
     serializer_class = PostSerializer
 
 
+class PostListRetrieve(generics.RetrieveAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
+
 class PostListIsPopular(generics.ListAPIView):
     queryset = Post.objects.filter(is_popular=True)
     pagination_class = CustomPagination()
@@ -26,6 +31,16 @@ class PostListForYou(generics.ListAPIView):
     serializer_class = PostSerializer
 
 
-class CommentCreate(generics.ListCreateAPIView):
+class CommentCreate(generics.CreateAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer()
+
+
+class CommentList(generics.ListAPIView):
+    serializer_class = CommentSerializer()
+
+    def get_queryset(self):
+        queryset = self.queryset
+        post_id = self.kwargs.get('post_id')
+        queryset = queryset.filter(post=post_id)
+        return queryset
